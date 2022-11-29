@@ -1,6 +1,7 @@
+import re
 from selenium import webdriver
-path = r"C:\Users\ADMIN\Downloads\chromedriver_win32\chromedriver.exe"
-driver = webdriver.Chrome(executable_path=path)
+# path = r"C:\Users\ADMIN\Downloads\chromedriver_win32\chromedriver.exe"
+# driver = webdriver.Chrome(executable_path=path)
 from selenium.webdriver.support.select import Select
 from LIBRARY.config import Config
 import time
@@ -9,7 +10,7 @@ read_xl=ReadExcel()
 
 login_obj=read_xl.read_locators(Config.read_locators)
 print(login_obj)
-driver.get("https://www.facebook.com/")
+# driver.get("https://www.facebook.com/")
 class Facebook:
     def __init__(self,driver):
         self.driver=driver
@@ -28,14 +29,23 @@ class Facebook:
 
 
     def emailid(self,email_id):
+        pattern = r"\w+@gmail\.com"
+        result = re.findall(pattern, email_id)
+        assert result, "invalid email"
         self.driver.find_element(*login_obj["txt_emailid1"]).send_keys(email_id)
 
 
     def con_emailid(self,conemail_id):
+        pattern = r"\w+@gmail\.com"
+        result = re.findall(pattern, conemail_id)
+        assert result, "invalid email"
         self.driver.find_element(*login_obj["txt_emailid2"]).send_keys(conemail_id)
 
 
     def new_password(self,newpassword_value):
+        if isinstance(newpassword_value, float):
+            pwd = str(int(newpassword_value))
+        assert len(newpassword_value) >= 6, "password should have atleast 6 characters"
         self.driver.find_element(*login_obj["txt_newpassword"]).send_keys(newpassword_value)
 
     def date(self):
